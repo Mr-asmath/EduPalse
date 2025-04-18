@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/png">
+    <title>Student Test - {{ questions[0]['unit_title'] }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --primary-dark: #2980b9;
+            --secondary-color: #2c3e50;
+            --light-gray: #f4f6f8;
+            --white: #ffffff;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-gray);
+            color: var(--secondary-color);
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 20px 0;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h2 {
+            font-size: 28px;
+            margin-bottom: 0;
+        }
+
+        .timer {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        form {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .question-box {
+            background-color: var(--white);
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border-left: 5px solid var(--primary-color);
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .question-box.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .question-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-box p {
+            margin: 15px 0;
+            font-size: 16px;
+        }
+
+        .question-text {
+            font-weight: 500;
+            color: var(--secondary-color);
+            margin-bottom: 15px !important;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin: 15px 0 8px;
+            color: var(--primary-dark);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            resize: vertical;
+            font-size: 15px;
+            transition: var(--transition);
+            min-height: 100px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        button[type="submit"] {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        button[type="submit"]:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        button[type="submit"]:active {
+            transform: translateY(0);
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: #f1f1f1;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .question-nav {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-color);
+            background-color: var(--white);
+            color: var(--primary-color);
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-btn:hover {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .nav-btn.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            form {
+                padding: 20px;
+            }
+            
+            .question-box {
+                padding: 20px;
+            }
+            
+            .form-footer {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+
+        /* Confirmation modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: fadeInUp 0.4s;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .modal-btn.confirm {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+        }
+
+        .modal-btn.cancel {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+        }
+
+        .modal-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="animate__animated animate__fadeInDown">
+        <div class="header-content">
+            <h2>{{ questions[0]['unit_title'] }} Test</h2>
+            <div class="timer" id="timer">Time: 60:00</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <form method="POST" id="testForm">
+            {% for q in questions %}
+                <div class="question-box animate__animated" id="question-{{ loop.index }}">
+                    <p class="question-text"><strong>Q{{ loop.index }}.1:</strong> {{ q.sample_question_1 }}</p>
+                    <label for="answer_{{ loop.index }}_1">Your Answer:</label>
+                    <textarea name="answer_{{ loop.index }}_1" id="answer_{{ loop.index }}_1" rows="4" required></textarea>
+
+                    <p class="question-text"><strong>Q{{ loop.index }}.2:</strong> {{ q.sample_question_2 }}</p>
+                    <label for="answer_{{ loop.index }}_2">Your Answer:</label>
+                    <textarea name="answer_{{ loop.index }}_2" id="answer_{{ loop.index }}_2" rows="4" required></textarea>
+                    
+                    <p class="question-text"><strong>Q{{ loop.index }}.3:</strong> {{ q.sample_question_3 }}</p>
+                    <label for="answer_{{ loop.index }}_3">Your Answer:</label>
+                    <textarea name="answer_{{ loop.index }}_3" id="answer_{{ loop.index }}_3" rows="4" required></textarea>
+
+                    <p class="question-text"><strong>Q{{ loop.index }}.4:</strong> {{ q.sample_question_4 }}</p>
+                    <label for="answer_{{ loop.index }}_4">Your Answer:</label>
+                    <textarea name="answer_{{ loop.index }}_4" id="answer_{{ loop.index }}_4" rows="4" required></textarea>
+
+                    <p class="question-text"><strong>Q{{ loop.index }}.5:</strong> {{ q.sample_question_5 }}</p>
+                    <label for="answer_{{ loop.index }}_5">Your Answer:</label>
+                    <textarea name="answer_{{ loop.index }}_5" id="answer_{{ loop.index }}_5" rows="4" required></textarea>
+                </div>
+            {% endfor %}
+
+            <div class="form-footer">
+                <div class="question-nav" id="questionNav">
+                    {% for q in questions %}
+                        <button type="button" class="nav-btn" data-question="{{ loop.index }}">{{ loop.index }}</button>
+                    {% endfor %}
+                </div>
+                <div class="" id="questionNav">
+                        <button type="button" id="submitBtn" class="btn">Submit Test</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal" id="confirmationModal">
+        <div class="modal-content">
+            <h3>Confirm Submission</h3>
+            <p>Are you sure you want to submit your test? You won't be able to make changes after submission.</p>
+            <div class="modal-actions">
+                <button class="modal-btn confirm" id="confirmSubmit">Yes, Submit</button>
+                <button class="modal-btn cancel" id="cancelSubmit">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate questions sequentially
+            const questions = document.querySelectorAll('.question-box');
+            questions.forEach((question, index) => {
+                setTimeout(() => {
+                    question.classList.add('animate__fadeInUp', 'visible');
+                }, 100 * index);
+            });
+
+            // Update progress bar
+            const progressBar = document.getElementById('progressBar');
+            const textareas = document.querySelectorAll('textarea');
+            const totalQuestions = textareas.length;
+            
+            function updateProgress() {
+                let answered = 0;
+                textareas.forEach(textarea => {
+                    if (textarea.value.trim() !== '') answered++;
+                });
+                const progress = (answered / totalQuestions) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+            
+            textareas.forEach(textarea => {
+                textarea.addEventListener('input', updateProgress);
+            });
+
+            // Timer functionality
+            let timeLeft = 60 * 60; // 60 minutes in seconds
+            const timerElement = document.getElementById('timer');
+            
+            function updateTimer() {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerElement.textContent = `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('testForm').submit();
+                } else {
+                    timeLeft--;
+                }
+            }
+            
+            const timerInterval = setInterval(updateTimer, 1000);
+            updateTimer();
+
+            // Question navigation
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const questionNum = this.getAttribute('data-question');
+                    const questionElement = document.getElementById(`question-${questionNum}`);
+                    
+                    // Scroll to question with offset for header
+                    const headerHeight = document.querySelector('header').offsetHeight;
+                    const questionPosition = questionElement.offsetTop;
+                    window.scrollTo({
+                        top: questionPosition - headerHeight - 20,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Update active nav button
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Mark first question as active initially
+            if (navButtons.length > 0) {
+                navButtons[0].classList.add('active');
+            }
+
+            // Confirmation modal
+            const submitBtn = document.getElementById('submitBtn');
+            const modal = document.getElementById('confirmationModal');
+            const confirmSubmit = document.getElementById('confirmSubmit');
+            const cancelSubmit = document.getElementById('cancelSubmit');
+            
+            submitBtn.addEventListener('click', function() {
+                modal.style.display = 'flex';
+            });
+            
+            cancelSubmit.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+            
+            confirmSubmit.addEventListener('click', function() {
+                document.getElementById('testForm').submit();
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            // Auto-save functionality (simulated - in a real app, this would save to server)
+            setInterval(() => {
+                console.log('Auto-save triggered');
+                // Here you would typically send data to server
+            }, 30000); // Every 30 seconds
+        });
+    </script>
+</body>
+</html>

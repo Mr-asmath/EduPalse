@@ -1,0 +1,11 @@
+<h2>Available Tests</h2>
+<ul>
+    {% for test in tests %}
+    <li>
+        {{ test.unit_title }} - {{ test.test_date }}
+        <a href="{{ url_for('main.student_unit_questions', standard=test.standard, unit_title=test.unit_title) }}">
+            Take Test
+        </a>
+    </li>
+    {% endfor %}
+</ul>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Our Platform</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --primary-dark: #2980b9;
+            --secondary-color: #2c3e50;
+            --light-gray: #f8f9fa;
+            --white: #ffffff;
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .background-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle at 10% 20%, rgba(52, 152, 219, 0.1) 0%, transparent 20%),
+                              radial-gradient(circle at 90% 80%, rgba(41, 128, 185, 0.1) 0%, transparent 20%);
+            z-index: -1;
+        }
+
+        .logo-container {
+            position: relative;
+            margin-bottom: 40px;
+            transform: scale(0);
+            animation: scaleIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .logo {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: scale(1.05) rotate(-5deg);
+        }
+
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .loader {
+            position: relative;
+            width: 80px;
+            height: 80px;
+        }
+
+        .loader-circle {
+            position: absolute;
+            border-radius: 50%;
+            animation: rotate 2s linear infinite;
+        }
+
+        .loader-circle:nth-child(1) {
+            width: 100%;
+            height: 100%;
+            border: 6px solid rgba(52, 152, 219, 0.2);
+            border-top-color: var(--primary-color);
+        }
+
+        .loader-circle:nth-child(2) {
+            top: 15px;
+            left: 15px;
+            width: 70%;
+            height: 70%;
+            border: 6px solid rgba(41, 128, 185, 0.2);
+            border-top-color: var(--primary-dark);
+            animation-direction: reverse;
+        }
+
+        .loader-circle:nth-child(3) {
+            top: 30px;
+            left: 30px;
+            width: 40%;
+            height: 40%;
+            border: 6px solid rgba(44, 62, 80, 0.2);
+            border-top-color: var(--secondary-color);
+        }
+
+        .progress-container {
+            width: 200px;
+            height: 4px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 1.3rem;
+            color: var(--secondary-color);
+            text-align: center;
+            max-width: 300px;
+            line-height: 1.5;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s 0.3s ease-out forwards;
+        }
+
+        .status-message {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 15px;
+            opacity: 0;
+            animation: fadeIn 0.6s 0.6s ease-out forwards;
+        }
+
+        .dots {
+            display: inline-block;
+            width: 20px;
+            text-align: left;
+        }
+
+        .dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            margin: 0 2px;
+            opacity: 0;
+            animation: dotPulse 1.5s infinite ease-in-out;
+        }
+
+        .dot:nth-child(1) { animation-delay: 0s; }
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes scaleIn {
+            0% { transform: scale(0); }
+            80% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes dotPulse {
+            0%, 100% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .message {
+                font-size: 1.1rem;
+                max-width: 250px;
+            }
+        }
+        .blend-logo {
+            mix-blend-mode: multiply;
+            background-color: transparent;
+            width: 200px;
+            }
+    </style>
+</head>
+<body>
+    <div class="background-pattern"></div>
+    
+    <div class="logo-container">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Company Logo" style="width: 300px;height: 300px;" class="logo">
+        
+    </div>
+    <img src="{{ url_for('static', filename='images/logo2.png') }}" alt="Company Logo" class="logo blend-logo">
+    
+    <div class="loading-container">
+       
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        
+        
+        <div class="status-message" id="statusMessage">
+            Loading essential components...
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate loading progress
+            const progressBar = document.getElementById('progressBar');
+            const statusMessage = document.getElementById('statusMessage');
+            const messages = [
+                "Loading essential components...",
+                "Initializing application...",
+                "Preparing dashboard...",
+                "Almost there...",
+                "Ready to go!"
+            ];
+            
+            let progress = 0;
+            const interval = setInterval(function() {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    statusMessage.textContent = messages[4];
+                    
+                    // Redirect after a slight delay when progress completes
+                    setTimeout(function() {
+                        window.location.href = "{{ url_for('main.login') }}";
+                    }, 800);
+                } else {
+                    // Update status message based on progress
+                    if (progress < 25) {
+                        statusMessage.textContent = messages[0];
+                    } else if (progress < 50) {
+                        statusMessage.textContent = messages[1];
+                    } else if (progress < 75) {
+                        statusMessage.textContent = messages[2];
+                    } else {
+                        statusMessage.textContent = messages[3];
+                    }
+                }
+                
+                progressBar.style.width = `${progress}%`;
+            }, 300);
+            
+            // Fallback redirect in case something goes wrong
+            setTimeout(function() {
+                if (progress < 100) {
+                    window.location.href = "{{ url_for('main.login') }}";
+                }
+            }, 7000);
+            
+            // Add logo hover effect
+            const logo = document.querySelector('.logo');
+            logo.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.05) rotate(-5deg)';
+            });
+            
+            logo.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1) rotate(0)';
+            });
+        });
+    </script>
+</body>
+</html>

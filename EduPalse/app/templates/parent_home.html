@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/png">
+    <title>Parent Dashboard</title>
+    <!-- Preload resources -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" as="font" crossorigin>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-dark: #1e40af;
+            --success: #10b981;
+            --success-dark: #059669;
+            --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --warning: #f59e0b;
+            --light: #f9fafb;
+            --dark: #111827;
+            --gray: #6b7280;
+            --light-gray: #e5e7eb;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3f4f6;
+            color: var(--dark);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        /* Header styles */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 1.25rem 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            color: white;
+            box-shadow: var(--shadow-md);
+            transform: translateY(-10px);
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .dashboard-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .dashboard-title i {
+            font-size: 1.5rem;
+        }
+
+        .logout-btn {
+            background-color: var(--danger);
+            border: none;
+            padding: 0.7rem 1.5rem;
+            color: white;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .logout-btn:hover {
+            background-color: var(--danger-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Welcome section */
+        .welcome-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+            opacity: 0;
+            animation: fadeIn 0.6s ease-out 0.3s forwards;
+        }
+
+        .welcome-section h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .child-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .child-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+
+        .child-details h2 {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .child-details p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Homework section */
+        .section-title {
+            margin: 2rem 0 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            position: relative;
+            padding-left: 1rem;
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: fadeInLeft 0.5s ease-out 0.4s forwards;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            background: var(--primary);
+            border-radius: 5px;
+        }
+
+        .homework-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .homework-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border-left: 4px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .homework-card:nth-child(1) { animation: fadeInUp 0.6s ease-out 0.5s forwards; }
+        .homework-card:nth-child(2) { animation: fadeInUp 0.6s ease-out 0.6s forwards; }
+        .homework-card:nth-child(3) { animation: fadeInUp 0.6s ease-out 0.7s forwards; }
+        .homework-card:nth-child(4) { animation: fadeInUp 0.6s ease-out 0.8s forwards; }
+
+        .homework-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .homework-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .homework-card p {
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        .homework-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .status-completed {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.25rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.7rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: var(--success-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-disabled {
+            background-color: var(--light-gray);
+            color: var(--gray);
+            cursor: not-allowed;
+        }
+
+        .btn-large {
+            padding: 0.9rem 1.75rem;
+            font-size: 1rem;
+        }
+
+        .view-marks-container {
+            text-align: center;
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeIn 0.6s ease-out 0.9s forwards;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 1.25rem;
+            }
+
+            .dashboard-title {
+                font-size: 1.5rem;
+            }
+
+            .homework-container {
+                grid-template-columns: 1fr;
+            }
+
+            .logout-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <h2 class="dashboard-title">
+            <i class="fas fa-user-shield"></i> Parent Dashboard
+        </h2>
+        <form action="{{ url_for('main.login') }}" method="GET">
+            <button type="submit" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </form>
+    </div>
+
+    <div class="welcome-section">
+        <h1>Welcome, {{ parent_name }}</h1>
+        <div class="child-info">
+            <div class="child-avatar">
+                {{ child_name[0]|upper }}
+            </div>
+            <div class="child-details">
+                <h2>{{ child_name }}</h2>
+                <p>Class {{ child_class }}</p>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="section-title">Homework Assignments</h2>
+    
+    <div class="homework-container">
+        {% set status_dict = {} %}
+        {% for r in response_statuses %}
+            {% set _ = status_dict.update({r['homework_id']: r['status']}) %}
+        {% endfor %}
+
+        {% for hw in homework_list %}
+            <div class="homework-card">
+                <h3>
+                    {{ hw['title'] }}
+                    {% if status_dict[hw['hw_id']] == 'Completed' %}
+                        <span class="homework-status status-completed">
+                            <i class="fas fa-check-circle"></i> Completed
+                        </span>
+                    {% else %}
+                        <span class="homework-status status-pending">
+                            <i class="fas fa-clock"></i> Pending
+                        </span>
+                    {% endif %}
+                </h3>
+                <p>{{ hw['description'] }}</p>
+                <small><i class="far fa-calendar-alt"></i> Due: {{ hw['due_date'] if hw['due_date'] else 'No due date' }}</small>
+                
+                <div class="card-actions">
+                    {% if status_dict[hw['hw_id']] == 'Completed' %}
+                        <button class="btn btn-disabled" disabled>
+                            <i class="fas fa-check"></i> Completed
+                        </button>
+                    {% else %}
+                        <form method="POST" action="{{ url_for('main.mark_homework_complete', homework_id=hw['hw_id']) }}" style="margin: 0;">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-check-circle"></i> Mark Completed
+                            </button>
+                        </form>
+                    {% endif %}
+                    <a href="{{ url_for('main.view_homework_parents', homework_id=hw['hw_id']) }}" class="btn btn-primary">
+                        <i class="fas fa-info-circle"></i> Details
+                    </a>
+                </div>
+            </div>
+        {% else %}
+            <div class="homework-card" style="grid-column: 1 / -1; text-align: center;">
+                <h3>No Homework Assigned</h3>
+                <p>There are currently no homework assignments for your child.</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="view-marks-container">
+        <form action="{{ url_for('main.view_child_marks') }}">
+            <button type="submit" class="btn btn-primary btn-large">
+                <i class="fas fa-chart-line"></i> View My Child's Progress Report
+            </button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add interactive elements
+            const homeworkCards = document.querySelectorAll('.homework-card');
+            
+            homeworkCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                    this.style.boxShadow = '0 10px 15px rgba(0, 0, 0, 0.1)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    if (!this.classList.contains('status-completed')) {
+                        this.style.transform = '';
+                        this.style.boxShadow = '';
+                    }
+                });
+            });
+
+            // Add confirmation for marking homework as complete
+            const completeButtons = document.querySelectorAll('.btn-success');
+            completeButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    if (!confirm('Are you sure you want to mark this homework as completed?')) {
+                        e.preventDefault();
+                    }
+                });
+            });
+
+            // Simulate loading if no homework
+            const homeworkContainer = document.querySelector('.homework-container');
+            if (homeworkContainer.children.length === 0) {
+                homeworkContainer.innerHTML = `
+                    <div class="homework-card" style="grid-column: 1 / -1; text-align: center;">
+                        <h3>No Homework Assigned</h3>
+                        <p>There are currently no homework assignments for your child.</p>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

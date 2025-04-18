@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Generate Lesson Questions</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/png">
+    <!-- Preload resources -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" as="font" crossorigin>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #93c5fd;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --light: #f9fafb;
+            --dark: #111827;
+            --gray: #6b7280;
+            --light-gray: #e5e7eb;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3f4f6;
+            color: var(--dark);
+            line-height: 1.5;
+            padding: 2rem;
+            min-height: 100vh;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            animation: slideIn 0.6s ease-out 0.2s forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes slideIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 1.5rem;
+            left: 1.5rem;
+            background-color: var(--light-gray);
+            color: var(--dark);
+            border: none;
+            padding: 0.6rem 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .back-btn:hover {
+            background-color: #d1d5db;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        h2 {
+            color: var(--primary-dark);
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            margin-top: 0.5rem;
+            text-align: center;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 25%;
+            width: 50%;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--success));
+            border-radius: 3px;
+        }
+
+        .form-section {
+            margin-bottom: 2.5rem;
+            animation: fadeIn 0.6s ease-out 0.4s forwards;
+            opacity: 0;
+        }
+
+        label {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            display: block;
+            font-size: 0.95rem;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: white;
+            transition: var(--transition);
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+
+        select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 0.9rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-secondary {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .questions-container {
+            margin-top: 2rem;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .questions-header {
+            background: linear-gradient(to right, var(--primary), var(--success));
+            color: white;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .questions-list {
+            background-color: white;
+            padding: 1.5rem;
+        }
+
+        .question-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--light-gray);
+            animation: fadeInUp 0.4s ease-out forwards;
+            opacity: 0;
+        }
+
+        .question-item:last-child {
+            border-bottom: none;
+        }
+
+        .question-number {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        .copy-btn {
+            background-color: var(--light-gray);
+            color: var(--dark);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .copy-btn:hover {
+            background-color: #d1d5db;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 1.5rem;
+            }
+
+            .container {
+                padding: 1.75rem 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+                margin-top: 1.5rem;
+            }
+
+            .back-btn {
+                top: 1rem;
+                left: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Back Button -->
+    <a href="{{ url_for('main.teacher_home') }}" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back
+    </a>
+
+    <h2>
+        <i class="fas fa-question-circle"></i> Generate Lesson Questions
+    </h2>
+
+    <!-- Question Generator Form -->
+    <div class="form-section">
+        <form action="{{ url_for('main.upload_dataset') }}" method="POST" id="questionForm">
+            <div class="form-group">
+                <label for="standard">
+                    <i class="fas fa-graduation-cap"></i> Select Standard
+                </label>
+                <select name="standard" id="standard" required>
+                    {% for std in standards %}
+                        <option value="{{ std }}">Standard {{ std }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="unit">
+                    <i class="fas fa-book"></i> Select Unit Title
+                </label>
+                
+                <select name="unit" id="unit" required>
+                    {% for unit in unit_titles %}
+                    
+                        <option value="{{ unit }}">{{ unit }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="generateBtn">
+                <i class="fas fa-magic"></i> Generate Questions
+            </button>
+        </form>
+    </div>
+
+    <!-- Generated Questions -->
+    {% if questions %}
+    <div class="questions-container">
+        <div class="questions-header">
+            <i class="fas fa-list-ol"></i> Generated Questions
+        </div>
+        <div class="questions-list">
+            {% for q in questions %}
+            <div class="question-item" style="animation-delay: {{ loop.index * 0.1 }}s">
+                <span class="question-number">{{ loop.index }}</span>
+                {{ q }}
+            </div>
+            {% endfor %}
+            
+            <button class="copy-btn" id="copyAllBtn">
+                <i class="far fa-copy"></i> Copy All Questions
+            </button>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Test Marks View -->
+    <div class="form-section">
+        <form action="{{ url_for('main.view_test_marks') }}" method="GET">
+            <div class="form-group">
+                <label for="unit_title">
+                    <i class="fas fa-chart-bar"></i> View Test Marks for Unit
+                </label>
+                <select name="unit_title" id="unit_title" required>
+                    {% for unit in unit_titles %}
+                        <option value="{{ unit }}">{{ unit }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-secondary">
+                <i class="fas fa-eye"></i> View Test Marks
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Form submission handling
+        const questionForm = document.getElementById('questionForm');
+        const generateBtn = document.getElementById('generateBtn');
+        
+        if (questionForm) {
+            questionForm.addEventListener('submit', function() {
+                // Show loading state
+                generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+                generateBtn.disabled = true;
+            });
+        }
+
+        // Copy all questions functionality
+        const copyAllBtn = document.getElementById('copyAllBtn');
+        if (copyAllBtn) {
+            copyAllBtn.addEventListener('click', function() {
+                const questions = document.querySelectorAll('.question-item');
+                let textToCopy = '';
+                
+                questions.forEach((question, index) => {
+                    textToCopy += `${index + 1}. ${question.textContent.trim()}\n`;
+                });
+                
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    const originalText = copyAllBtn.innerHTML;
+                    copyAllBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    
+                    setTimeout(() => {
+                        copyAllBtn.innerHTML = originalText;
+                    }, 2000);
+                });
+            });
+        }
+
+        // Animate select dropdowns on focus
+        const selects = document.querySelectorAll('select');
+        selects.forEach(select => {
+            select.addEventListener('focus', function() {
+                this.style.transform = 'translateY(-2px)';
+                this.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+            });
+            
+            select.addEventListener('blur', function() {
+                this.style.transform = '';
+                this.style.boxShadow = '';
+            });
+        });
+    });
+</script>
+</body>
+</html>

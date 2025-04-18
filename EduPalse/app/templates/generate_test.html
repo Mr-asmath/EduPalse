@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate Test</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/png">
+</head>
+<body>
+    <h1>Generate Test</h1>
+    <form action="/generate_test" method="POST">
+        <label for="class_name">Class:</label>
+        <input type="text" name="class_name" required><br>
+
+        <label for="subject">Subject:</label>
+        <input type="text" name="subject" required><br>
+
+        <label for="unit">Unit:</label>
+        <input type="text" name="unit" required><br>
+
+        <label for="lesson_data">Lesson Data:</label><br>
+        <textarea name="lesson_data" rows="10" cols="80" required></textarea><br>
+
+        <input type="submit" value="Generate Test">
+    </form>
+
+
+
+    {% if message %}
+        <p style="color: green;">{{ message }}</p>
+    {% endif %}
+</body>
+</html>

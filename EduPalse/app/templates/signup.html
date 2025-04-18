@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/png">
+    <title>Sign Up | Educational Portal</title>
+    <!-- Preload critical resources -->
+    <!link rel="preload" href="{{ url_for('static', filename='css/signup2.css') }}" as="style">
+    <!link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+    <!link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" as="font" crossorigin>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/signup2.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Inline critical CSS for faster initial render -->
+    <style>
+        .signup-container {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .progress-tracker {
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated background elements -->
+    <div class="bg-shapes">
+        <div class="shape circle"></div>
+        <div class="shape triangle"></div>
+        <div class="shape square"></div>
+    </div>
+
+    <!-- Progress tracker -->
+    <div class="progress-tracker-container">
+        <div class="progress-tracker" id="formProgress"></div>
+    </div>
+
+    <div class="signup-container">
+        <div class="signup-header">
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='images/logo2.png') }}" alt="Company Logo" class="logo blend-logo">
+            </div>
+            <h2>Create Your Account</h2>
+            <p class="subtitle">Join our educational community in just a few steps</p>
+        </div>
+
+        <!-- Multi-step form -->
+        <form action="/signup" method="post" id="signup-form" class="multi-step-form">
+            <!-- Step 1: User Type -->
+            <div class="form-step active" data-step="1">
+                <div class="step-header">
+                    <span class="step-number">1</span>
+                    <h3>Select Your Role</h3>
+                </div>
+                
+                <div class="user-type-selector">
+                    <div class="user-type-card" data-value="Student">
+                        <div class="icon-container">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h4>Student</h4>
+                        <p>I'm enrolling as a student</p>
+                    </div>
+                    
+                    <div class="user-type-card" data-value="Teacher">
+                        <div class="icon-container">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <h4>Teacher</h4>
+                        <p>I'm a faculty member</p>
+                    </div>
+                    
+                    <div class="user-type-card" data-value="Parent">
+                        <div class="icon-container">
+                            <i class="fas fa-user-friends"></i>
+                        </div>
+                        <h4>Parent</h4>
+                        <p>I'm a parent/guardian</p>
+                    </div>
+                    
+                    <div class="user-type-card" data-value="Admin">
+                        <div class="icon-container">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <h4>Admin</h4>
+                        <p>I'm an administrator</p>
+                    </div>
+                </div>
+                
+                <input type="hidden" id="user_type" name="user_type" required>
+                
+                <div class="form-navigation">
+                    <button type="button" class="btn-next" disabled>Continue <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Step 2: Role-Specific Details -->
+            <div class="form-step" data-step="2">
+                <div class="step-header">
+                    <span class="step-number">2</span>
+                    <h3>Your Information</h3>
+                    <button type="button" class="btn-back"><i class="fas fa-arrow-left"></i> Back</button>
+                </div>
+                
+                <!-- Dynamic fields will be injected here based on user type -->
+                <div id="dynamic-fields-container" class="dynamic-fields">
+                    <!-- Fields will be loaded via JavaScript -->
+                </div>
+                
+                <div class="form-navigation">
+                    <button type="button" class="btn-back"><i class="fas fa-arrow-left"></i> Back</button>
+                    <button type="button" class="btn-next">Continue <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Step 3: Account Details -->
+            <div class="form-step" data-step="3">
+                <div class="step-header">
+                    <span class="step-number">3</span>
+                    <h3>Account Setup</h3>
+                    <button type="button" class="btn-back"><i class="fas fa-arrow-left"></i> Back</button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">
+                        <i class="fas fa-envelope"></i> Email Address
+                    </label>
+                    <input type="email" id="email" name="email" required>
+                    <div class="input-feedback"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">
+                        <i class="fas fa-mobile-alt"></i> Phone Number
+                    </label>
+                    <input type="tel" id="phone" name="phone" required>
+                    <div class="input-feedback"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="unique_id">
+                        <i class="fas fa-id-card"></i> Select Generated ID
+                    </label>
+                    <select id="unique_id" name="unique_id" required>
+                        <!-- IDs will be dynamically populated -->
+                    </select>
+                    <div class="input-feedback"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fas fa-lock"></i> Password:
+                        <span class="password-strength" id="passwordStrength"></span>
+                    </label>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" name="password" required>
+                        <i class="fas fa-eye toggle-password"></i>
+                    </div>
+                    <div class="password-requirements">
+                        <p>Password must contain:</p>
+                        <ul>
+                            <li class="req-uppercase"><i class="fas fa-circle"></i> 1 uppercase letter</li>
+                            <li class="req-lowercase"><i class="fas fa-circle"></i> 1 lowercase letter</li>
+                            <li class="req-number"><i class="fas fa-circle"></i> 1 number</li>
+                            <li class="req-special"><i class="fas fa-circle"></i> 1 special character</li>
+                            <li class="req-length"><i class="fas fa-circle"></i> 8+ characters</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm_password">
+                        <i class="fas fa-lock"></i> Confirm Password
+                    </label>
+                    <div class="password-wrapper">
+                        <input type="password" id="confirm_password" name="confirm_password" required>
+                        <i class="fas fa-eye toggle-password"></i>
+                    </div>
+                    <div class="input-feedback"></div>
+                </div>
+                
+                <div class="form-navigation">
+                    <button type="button" class="btn-back"><i class="fas fa-arrow-left"></i> Back</button>
+                    <button type="submit" class="btn-submit">
+                        <span class="btn-text">Create Account</span>
+                        <div class="loader"></div>
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="login-link">
+            Already have an account? <a href="/login" class="highlight">Log In</a>
+        </div>
+    </div>
+
+    <!-- Loading overlay -->
+    <div class="overlay" id="loadingOverlay">
+        <div class="spinner-container">
+            <div class="spinner"></div>
+            <p>Creating your account...</p>
+        </div>
+    </div>
+
+    <!-- Confirmation modal -->
+    <div class="modal" id="confirmationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Verify Your Information</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="confirmationContent">
+                <!-- Content will be dynamically filled -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel">Edit Information</button>
+                <button class="btn-confirm">Confirm & Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script defer src="{{ url_for('static', filename='js/signup2.js') }}"></script>
+</body>
+</html>

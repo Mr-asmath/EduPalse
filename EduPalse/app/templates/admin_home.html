@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/png">
+  <title>Admin Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f4f8;
+      margin: 0;
+      padding: 2rem;
+      overflow-x: hidden;
+    }
+
+    .dashboard-header {
+      background: linear-gradient(to right, #1e3a8a, #3b82f6);
+      color: white;
+      padding: 1.5rem 2rem;
+      border-radius: 15px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      animation: fadeInDown 0.8s ease-in-out;
+    }
+
+    .dashboard-header h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    .dashboard-header p {
+      margin-top: 0.5rem;
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+
+    .logout-btn {
+      position: absolute;
+      top: 1.2rem;
+      right: 2rem;
+      background-color: #ef4444;
+      border: none;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      background-color: #dc2626;
+    }
+
+    .container-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+      animation: fadeInUp 1s ease-in-out;
+    }
+
+    .container {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      background-color: #f9fbff;
+    }
+
+    .container h3 {
+      margin-top: 0;
+      font-size: 1.25rem;
+      color: #1f2937;
+    }
+
+    .container p {
+      color: #4b5563;
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
+    }
+
+    .actions {
+      margin-top: 1rem;
+    }
+
+    .actions button {
+      margin: 0 0.4rem;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .update-btn {
+      background-color: #3b82f6;
+      color: white;
+    }
+
+    .delete-btn {
+      background-color: #ef4444;
+      color: white;
+    }
+
+    .actions button:hover {
+      transform: scale(1.05);
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 500px) {
+      .logout-btn {
+        top: 1rem;
+        right: 1rem;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard-header">
+    <h1>Admin Dashboard</h1>
+    <p>Overall Control Panel: Teachers, Students, Homework, and Tests</p>
+    <form action="{{ url_for('main.login') }}" method="GET">
+      <button class="logout-btn">Logout</button>
+    </form>
+  </div>
+
+  <div class="container-grid">
+    <!-- Teachers -->
+    <div class="container" onclick="location.href='/admin/teacher_analysis'">
+      <h3>Teachers</h3>
+      <p>Display, update, delete teacher details</p>
+      <div class="actions">
+        <button class="update-btn">Update</button>
+        <button class="delete-btn">Delete</button>
+      </div>
+    </div>
+
+    <!-- Students -->
+    <div class="container" onclick="location.href='/admin/student_details'">
+      <h3>Students</h3>
+      <p>Show all students with their parent details</p>
+      <div class="actions">
+        <button class="update-btn">Update</button>
+        <button class="delete-btn">Delete</button>
+      </div>
+    </div>
+
+    <!-- Homework -->
+    <div class="container" onclick="location.href='/admin/class_homeworks'">
+      <h3>Homework</h3>
+      <p>View by class: teacher & uploaded homework details</p>
+      <div class="actions">
+        <button class="update-btn">Update</button>
+        <button class="delete-btn">Delete</button>
+      </div>
+    </div>
+
+    <!-- Tests -->
+    <div class="container" onclick="location.href='/admin/test_classes'">
+      <h3>Tests</h3>
+      <p>See tests by class: student marks & teacher info</p>
+      <div class="actions">
+        <button class="update-btn">Update</button>
+        <button class="delete-btn">Delete</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

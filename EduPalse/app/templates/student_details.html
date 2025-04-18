@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Details</title>
+  <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/png">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9fafb;
+      padding: 2rem;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: #1e3a8a;
+    }
+    .student-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      margin-bottom: 1.5rem;
+    }
+    .student-card h3 {
+      margin: 0;
+      color: #1f2937;
+    }
+    .details {
+      margin-top: 1rem;
+    }
+    .label {
+      font-weight: bold;
+    }
+    .actions {
+      margin-top: 1rem;
+    }
+    .actions form {
+      display: inline-block;
+    }
+    .update-btn, .delete-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-right: 0.5rem;
+    }
+    .update-btn {
+      background-color: #3b82f6;
+      color: white;
+    }
+    .delete-btn {
+      background-color: #ef4444;
+      color: white;
+    }
+    .btn.btn-secondary {
+        display: inline-block;
+        margin-top: 1.5rem;
+        background-color: #6c757d;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn.btn-secondary:hover {
+        background-color: #5a6268;
+        transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <h2>Student and Parent Details</h2><a href="{{ url_for('main.admin_home') }}" class="btn btn-secondary" style="font-weight: none;">← Back to Homework</a><br><br>
+
+  {% for entry in student_data %}
+  <div class="student-card">
+    <h3>{{ entry.student.name }} (Class {{ entry.student.class }}{{ entry.student.section }})</h3>
+    <div class="details">
+      <p><span class="label">Email:</span> {{ entry.student.email }}</p>
+      <p><span class="label">Phone:</span> {{ entry.student.phone }}</p>
+      <p><span class="label">Roll Number:</span> {{ entry.student.roll_number }}</p>
+      <p><span class="label">ESIM Number:</span> {{ entry.student.esim_number }}</p>
+    </div>
+    {% if entry.parent %}
+    <div class="details">
+      <h4>Parent Details:</h4>
+      <p><span class="label">Name:</span> {{ entry.parent.name }}</p>
+      <p><span class="label">Email:</span> {{ entry.parent.email }}</p>
+      <p><span class="label">Phone:</span> {{ entry.parent.phone }}</p>
+    </div>
+    {% else %}
+    <p><em>No parent information found.</em></p>
+    {% endif %}
+
+    <div class="actions">
+      <form action="{{ url_for('main.update_student', student_id=entry.student.id) }}" method="get">
+        <button class="update-btn" type="submit">Update</button>
+      </form>
+      <form action="{{ url_for('main.delete_student', student_id=entry.student.id) }}" method="post">
+        <button class="delete-btn" type="submit">Delete</button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</body>
+</html>

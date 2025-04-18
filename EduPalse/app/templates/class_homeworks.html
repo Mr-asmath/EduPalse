@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Homeworks for {{ class_name }}</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/png">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f9fafb;
+            padding: 2rem;
+            color: #1f2937;
+        }
+        .homework-box {
+            background-color: #ffffff;
+            border-left: 5px solid #2563eb;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .response-button {
+            margin-top: 0.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #10b981;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .response-button:hover {
+            background-color: #059669;
+        }
+        .back-btn {
+            background-color: #3b82f6;
+            padding: 0.5rem 1rem;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .back-btn:hover {
+            background-color: #2563eb;
+        }
+        .btn.btn-secondary {
+            display: inline-block;
+            margin-top: 1.5rem;
+            background-color: #6c757d;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn.btn-secondary:hover {
+            background-color: #5a6268;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+<h2>Homeworks for Class: {{ class_name }}</h2>
+
+{% if homeworks %}
+    {% for hw in homeworks %}
+    <div class="homework-box">
+        <h3>{{ hw.title }}</h3>
+        <p>{{ hw.description }}</p>
+        <small>Uploaded on: {{ hw.created_at }}</small><br>
+        <a href="{{ url_for('main.view_homework_responses', homework_id=hw.id) }}">
+            <button class="response-button">View Responses</button>
+        </a>
+    </div>
+    {% endfor %}
+{% else %}
+    <p>No homework uploaded for this class yet.</p>
+{% endif %}
+
+<a class="back-btn" href="{{ url_for('main.teacher_home') }}">← Back to Dashboard</a>
+
+</body>
+</html>

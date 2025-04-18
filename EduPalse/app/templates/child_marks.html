@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ child_name }}'s Test Marks</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/png">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 2rem;
+            background: #f0f4f8;
+            margin: 0;
+        }
+
+        h2 {
+            color: #1f2937;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .mark-box {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .mark-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+
+        .mark-box p {
+            margin: 0.5rem 0;
+            color: #374151;
+            font-size: 1rem;
+        }
+
+        strong {
+            color: #111827;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 0.6rem 1.2rem;
+            background-color: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-link:hover {
+            background-color: #1e40af;
+        }
+
+        .no-marks {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Test Marks for {{ child_name }}</h2>
+
+        {% if test_marks %}
+            {% for test in test_marks %}
+            <div class="mark-box">
+                <p><strong>Unit:</strong> {{ test['unit_title'] }}</p>
+                <p><strong>Marks:</strong> {{ test['marks'] }}</p>
+                <p><strong>Date:</strong> {{ test['submitted_at'] }}</p>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-marks">No test marks found.</p>
+        {% endif %}
+
+        <a class="back-link" href="{{ url_for('main.parent_home') }}">⬅ Back to Dashboard</a>
+    </div>
+</body>
+</html>

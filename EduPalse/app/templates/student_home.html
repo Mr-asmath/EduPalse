@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/png">
+    <title>Student Dashboard</title>
+    <!-- Preload resources -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" as="font" crossorigin>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-dark: #1e40af;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --light: #f9fafb;
+            --dark: #111827;
+            --gray: #6b7280;
+            --light-gray: #e5e7eb;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3f4f6;
+            color: var(--dark);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        /* Header styles */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            color: white;
+            box-shadow: var(--shadow-md);
+            transform: translateY(-10px);
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .dashboard-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dashboard-title i {
+            font-size: 1.5rem;
+        }
+
+        .logout-btn {
+            background-color: var(--danger);
+            border: none;
+            padding: 0.6rem 1.25rem;
+            color: white;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .logout-btn:hover {
+            background-color: var(--danger-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .logout-btn i {
+            font-size: 1rem;
+        }
+
+        /* Section styles */
+        .section-title {
+            margin-top: 2.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            position: relative;
+            padding-left: 1rem;
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: fadeInLeft 0.5s ease-out forwards;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+            border-radius: 5px;
+        }
+
+        /* Card container */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out 0.3s forwards;
+        }
+
+        /* Card styles */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border: 1px solid var(--light-gray);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card:hover::before {
+            background: var(--secondary);
+        }
+
+        .card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--dark);
+        }
+
+        .card p {
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        .card small {
+            display: block;
+            color: var(--gray);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-disabled {
+            background-color: var(--light-gray);
+            color: var(--gray);
+            cursor: not-allowed;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .badge-new {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-completed {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .attachment-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--primary);
+            text-decoration: none;
+            margin-top: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .attachment-link:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        .no-content {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray);
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .card {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .card:nth-child(1) { animation: fadeInUp 0.6s ease-out 0.4s forwards; }
+        .card:nth-child(2) { animation: fadeInUp 0.6s ease-out 0.5s forwards; }
+        .card:nth-child(3) { animation: fadeInUp 0.6s ease-out 0.6s forwards; }
+        .card:nth-child(4) { animation: fadeInUp 0.6s ease-out 0.7s forwards; }
+        .card:nth-child(5) { animation: fadeInUp 0.6s ease-out 0.8s forwards; }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 1.25rem;
+            }
+
+            .dashboard-title {
+                font-size: 1.5rem;
+            }
+
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <h2 class="dashboard-title">
+            <i class="fas fa-graduation-cap"></i> Student Dashboard
+        </h2>
+        <form action="{{ url_for('main.login') }}" method="POST">
+            <button type="submit" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </form>
+    </div>
+
+    <h2 class="section-title">Homework Assignments</h2>
+    
+    <div class="cards-container" id="homework-container">
+        {% if homework %}
+            {% for hw in homework %}
+            <div class="card homework-card">
+                <h3>
+                    {{ hw['title'] }}
+                    {% if hw['is_new'] %}<span class="badge badge-new">New</span>{% endif %}
+                </h3>
+                <p class="homework-description">{{ hw['description'] }}</p>
+                
+                {% if hw['file_path'] %}
+                <a class="attachment-link" href="{{ url_for('static', filename='uploads/' + hw['file_path']) }}" target="_blank">
+                    <i class="fas fa-paperclip"></i> Download Attachment
+                </a>
+                {% endif %}
+                
+                <small><i class="far fa-calendar-alt"></i> Assigned on: {{ hw['created_at'] }}</small>
+                
+                <div class="card-actions">
+                    <a href="{{ url_for('main.view_homework', homework_id=hw['id']) }}" class="btn btn-primary">
+
+                        <i class="far fa-eye"></i> View Details
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="card no-content">
+                <p><i class="far fa-smile"></i> No homework assigned yet!</p>
+            </div>
+        {% endif %}
+    </div>
+    
+
+    <h2 class="section-title">Available Unit Tests</h2>
+    
+    <div class="cards-container" id="tests-container">
+        {% if available_tests %}
+            {% for test in available_tests %}
+                <div class="card test-card">
+                    <h3>{{ test['unit_title'] }}</h3>
+                    <p>Standard: {{ test['standard'] }}</p>
+                    <small><i class="far fa-clock"></i> Time limit: 30 minutes</small>
+                    
+                    <div class="card-actions">
+                        {% if test['completed'] %}
+                            <button class="btn btn-disabled">
+                                <i class="fas fa-check"></i> Completed
+                                <span class="badge badge-completed">Score: {{ test['score'] }}/100</span>
+                            </button>
+                            <a href="#" class="btn btn-secondary">
+                                <i class="fas fa-chart-bar"></i> View Results
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('main.student_unit_questions', standard=test['standard'], unit_title=test['unit_title']) }}" 
+                               class="btn btn-primary">
+                                <i class="fas fa-pencil-alt"></i> Start Test
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="card no-content">
+                <p><i class="far fa-smile"></i> No tests available at this time.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add interactive elements
+            const cards = document.querySelectorAll('.card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                    this.style.boxShadow = '0 10px 15px rgba(0, 0, 0, 0.1)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = '';
+                    this.style.boxShadow = '';
+                });
+            });
+
+            // Simulate loading new content
+            setTimeout(() => {
+                const homeworkContainer = document.getElementById('homework-container');
+                if (homeworkContainer.children.length === 0) {
+                    homeworkContainer.innerHTML = `
+                        <div class="card no-content">
+                            <p><i class="far fa-smile"></i> No homework assigned yet!</p>
+                        </div>
+                    `;
+                }
+                
+                const testsContainer = document.getElementById('tests-container');
+                if (testsContainer.children.length === 0) {
+                    testsContainer.innerHTML = `
+                        <div class="card no-content">
+                            <p><i class="far fa-smile"></i> No tests available at this time.</p>
+                        </div>
+                    `;
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>

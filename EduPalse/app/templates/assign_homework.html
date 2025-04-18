@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Assign Homework</h2>
+<form method="POST">
+  <label>Lesson:</label>
+  <select name="lesson_id">
+    {% for lesson in lessons %}
+      <option value="{{ lesson.id }}">{{ lesson.title }}</option>
+    {% endfor %}
+  </select>
+  <label>Description:</label>
+  <textarea name="description"></textarea>
+  <label>Due Date:</label>
+  <input type="date" name="due_date">
+  <button type="submit">Create</button>
+</form>
+{% endblock %}

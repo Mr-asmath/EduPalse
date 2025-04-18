@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Teacher Analysis</title>
+  <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/png">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9fafb;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      color: #1e3a8a;
+      margin-bottom: 2rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    th {
+      background-color: #1e3a8a;
+      color: white;
+    }
+    tr:hover {
+      background-color: #f1f5f9;
+    }
+    .actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .update-btn {
+      background-color: #3b82f6;
+      color: white;
+    }
+    .delete-btn {
+      background-color: #ef4444;
+      color: white;
+    }
+    .btn.btn-secondary {
+      display: inline-block;
+      margin-top: 1.5rem;
+      background-color: #6c757d;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn.btn-secondary:hover {
+        background-color: #5a6268;
+        transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <h1>Teacher Details & Analysis</h1><a href="{{ url_for('main.admin_home') }}" class="btn btn-secondary" style="font-weight: none;">← Back to Homework</a>
+  <br><br>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Attending Classes</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for teacher in teachers %} 
+      <tr>
+        <td>{{ teacher[0] }}</td>
+        <td>{{ teacher[1] }}</td>
+        <td>{{ teacher[2] }}</td>
+        <td>{{ teacher[3] }}</td>
+        <td>{{ teacher[4] }}</td>
+        <td class="actions">
+          <form action="/admin/update_teacher/{{ teacher[0] }}" method="get">
+            <button type="submit" class="btn update-btn">Update</button>
+          </form>
+          <form action="/admin/delete_teacher/{{ teacher[0] }}" method="post" onsubmit="return confirm('Are you sure you want to delete this teacher?');">
+            <button type="submit" class="btn delete-btn">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

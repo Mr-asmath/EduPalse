@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Update Student</title>
+  <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/png">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f3f4f6;
+      padding: 2rem;
+    }
+    form {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #1e40af;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      margin-top: 1.5rem;
+      width: 100%;
+      padding: 0.7rem;
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1e3a8a;
+    }
+  </style>
+</head>
+<body>
+  <form method="POST">
+    <h2>Update Student</h2>
+    
+    <label>Name:</label>
+    <input type="text" name="name" value="{{ student.name }}" required>
+
+    <label>Email:</label>
+    <input type="email" name="email" value="{{ student.email }}" required>
+
+    <label>Phone:</label>
+    <input type="text" name="phone" value="{{ student.phone }}" required>
+
+    <label>Roll Number:</label>
+    <input type="text" name="roll_number" value="{{ student.roll_number }}">
+
+    <label>ESIM Number:</label>
+    <input type="text" name="esim_number" value="{{ student.esim_number }}">
+
+    <label>Class:</label>
+    <input type="text" name="class" value="{{ student.class }}">
+
+    <label>Section:</label>
+    <input type="text" name="section" value="{{ student.section }}">
+
+    <button type="submit">Update Student</button>
+  </form>
+</body>
+</html>

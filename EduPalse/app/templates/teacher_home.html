@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Teacher Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/png">
+  <!-- Preload resources -->
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" as="font" crossorigin>
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-light: #3b82f6;
+      --primary-dark: #1e40af;
+      --secondary: #10b981;
+      --secondary-dark: #059669;
+      --danger: #ef4444;
+      --danger-dark: #dc2626;
+      --warning: #f59e0b;
+      --light: #f9fafb;
+      --dark: #111827;
+      --gray: #6b7280;
+      --light-gray: #e5e7eb;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f3f4f6;
+      color: var(--dark);
+      line-height: 1.5;
+      padding: 2rem;
+    }
+
+    /* Header styles */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      padding: 1.5rem 2rem;
+      border-radius: 12px;
+      color: white;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--shadow-md);
+      transform: translateY(-10px);
+      opacity: 0;
+      animation: fadeInUp 0.6s ease-out forwards;
+    }
+
+    .dashboard-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .dashboard-title i {
+      font-size: 1.5rem;
+    }
+
+    .logout-btn {
+      background-color: var(--danger);
+      border: none;
+      padding: 0.7rem 1.5rem;
+      color: white;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .logout-btn:hover {
+      background-color: var(--danger-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Main content */
+    .main-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 1.5rem;
+      position: relative;
+      padding-left: 1rem;
+      opacity: 0;
+      transform: translateX(-20px);
+      animation: fadeInLeft 0.5s ease-out 0.3s forwards;
+    }
+
+    .section-title::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 5px;
+      background: var(--primary);
+      border-radius: 5px;
+    }
+
+    /* Class cards */
+    .class-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .class-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.75rem;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      border-left: 4px solid var(--primary);
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .class-card:nth-child(1) { animation: fadeInUp 0.6s ease-out 0.4s forwards; }
+    .class-card:nth-child(2) { animation: fadeInUp 0.6s ease-out 0.5s forwards; }
+    .class-card:nth-child(3) { animation: fadeInUp 0.6s ease-out 0.6s forwards; }
+    .class-card:nth-child(4) { animation: fadeInUp 0.6s ease-out 0.7s forwards; }
+    .class-card:nth-child(5) { animation: fadeInUp 0.6s ease-out 0.8s forwards; }
+
+    .class-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .class-card h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .class-card h3 i {
+      color: var(--primary);
+    }
+
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-secondary {
+      background-color: var(--secondary);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--secondary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Quick stats section */
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeIn 0.6s ease-out 0.9s forwards;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      text-align: center;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      body {
+        padding: 1.5rem;
+      }
+
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1.25rem;
+      }
+
+      .dashboard-title {
+        font-size: 1.5rem;
+      }
+
+      .logout-btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .class-list {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-container {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-content">
+    <div class="page-header">
+      <h1 class="dashboard-title">
+        <i class="fas fa-chalkboard-teacher"></i> Welcome, {{ teacher_name }}
+      </h1>
+      <form action="{{ url_for('main.login') }}" method="POST">
+        <button type="submit" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </form>
+    </div>
+
+    <!-- Quick Stats Section -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-value">{{ class_list|length }}</div>
+        <div class="stat-label">Classes Assigned</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">24</div>
+        <div class="stat-label">Students Total</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">5</div>
+        <div class="stat-label">Pending Assignments</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">87%</div>
+        <div class="stat-label">Average Performance</div>
+      </div>
+    </div>
+
+    <h2 class="section-title">Your Classes</h2>
+    <div class="class-list">
+      {% for class_name in class_list %}
+      <div class="class-card">
+        <h3><i class="fas fa-users"></i> Class {{ class_name }}</h3>
+        <div class="btn-group">
+          <a href="{{ url_for('main.upload_homework', class_name=class_name) }}" class="action-btn btn-primary">
+            <i class="fas fa-upload"></i> Upload Homework
+          </a>
+          <a href="{{ url_for('main.upload_dataset', standard=class_name|int, class_list=class_list) }}" class="action-btn btn-secondary">
+            <i class="fas fa-book-open"></i> View Lessons
+          </a>
+        
+          <a href="{{ url_for('main.students_details', class_name=class_name) }}" class="action-btn btn-primary">
+            <i class="fas fa-user-graduate"></i> View Students
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add interactive elements
+      const classCards = document.querySelectorAll('.class-card');
+      
+      classCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+          this.style.transform = 'translateY(-5px)';
+          this.style.boxShadow = '0 10px 15px rgba(0, 0, 0, 0.1)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+          this.style.transform = '';
+          this.style.boxShadow = '';
+        });
+      });
+
+      // Add confirmation for important actions
+      const uploadButtons = document.querySelectorAll('.btn-primary[href*="upload"]');
+      uploadButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+          if (!confirm('Are you ready to upload materials for this class?')) {
+            e.preventDefault();
+          }
+        });
+      });
+
+      // Simulate loading if no classes
+      const classList = document.querySelector('.class-list');
+      if (classList.children.length === 0) {
+        classList.innerHTML = `
+          <div class="class-card" style="grid-column: 1 / -1; text-align: center;">
+            <h3><i class="fas fa-info-circle"></i> No Classes Assigned</h3>
+            <p>You currently don't have any classes assigned to you.</p>
+          </div>
+        `;
+      }
+    });
+  </script>
+</body>
+</html>
